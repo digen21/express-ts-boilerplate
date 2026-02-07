@@ -2,9 +2,8 @@ import compression from "compression";
 import cors from "cors";
 import express from "express";
 
-import { env } from "@config";
+import { connectToDatabase, env } from "@config";
 import {
-  connectToDatabase,
   globalErrorHandler,
   googleAuth,
   passportAuth,

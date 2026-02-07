@@ -95,7 +95,7 @@ export const login = catchAsync(async (req: Request, res: Response) => {
     });
   }
 
-  const token = jwt.sign({ userId: user.id }, JWT_TOKEN!, {
+  const token = jwt.sign({ userId: user.id, role: user.role }, JWT_TOKEN!, {
     expiresIn: env.EXPIRY_TIME,
   });
 

@@ -1,4 +1,5 @@
 import "dotenv/config";
+
 import Joi from "joi";
 
 const envSchema = Joi.object({
@@ -8,7 +9,11 @@ const envSchema = Joi.object({
     .default("development"),
   JWT_TOKEN: Joi.string().required(),
   EXPIRY_TIME: Joi.string().default("10d"),
-  MONGO_URI: Joi.string().uri().required(),
+  MONGO_URI: Joi.string().uri().when("NODE_ENV", {
+    is: "test",
+    then: Joi.string().optional(),
+    otherwise: Joi.string().required(),
+  }),
   MONGO_URI_TEST: Joi.string().uri().required(),
   GOOGLE_CLIENT_ID: Joi.when("NODE_ENV", {
     is: "test",
@@ -42,6 +47,9 @@ const envSchema = Joi.object({
     otherwise: Joi.string().required(),
   }),
   EMAIL_FROM: Joi.string(),
+  REDIS_HOST: Joi.string().default("localhost"),
+  REDIS_PORT: Joi.number().default(6379),
+  // REDIS_PASSWORD: Joi.string(),
 }).unknown();
 
 const { error, value: envVars } = envSchema.validate(process.env);
@@ -57,7 +65,6 @@ const env = {
   MONGO_URI_TEST: envVars.MONGO_URI_TEST,
   GOOGLE_CLIENT_ID: envVars.GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET: envVars.GOOGLE_CLIENT_SECRET,
-  SESSION_SECRET: envVars.SESSION_SECRET,
   GOOGLE_CALLBACK_URL: envVars.GOOGLE_CALLBACK_URL,
   isProd: envVars.NODE_ENV === "production",
   isDev: envVars.NODE_ENV === "development",
@@ -69,6 +76,9 @@ const env = {
   MAIL_PASSWORD: envVars.MAIL_PASSWORD,
   EMAIL_FROM: envVars.EMAIL_FROM || "no-reply@travel-buddy",
   EXPIRY_TIME: envVars.EXPIRY_TIME || "10d",
+  REDIS_HOST: envVars.REDIS_HOST,
+  REDIS_PORT: envVars.REDIS_PORT,
+  // REDIS_PASSWORD: envVars.REDIS_PASSWORD,
 };
 
 export default env;

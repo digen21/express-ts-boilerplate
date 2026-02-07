@@ -19,16 +19,7 @@ const UserSchema = new Schema<IUser>(
     phoneNumber: {
       type: "string",
     },
-    bio: {
-      type: "string",
-    },
     avatar: {
-      type: "string",
-    },
-    city: {
-      type: "string",
-    },
-    country: {
       type: "string",
     },
     password: {
@@ -47,8 +38,15 @@ const UserSchema = new Schema<IUser>(
     providerId: {
       type: "string",
     },
+    roleId: {
+      type: Schema.Types.ObjectId,
+      ref: "Role",
+      required: true,
+      index: true,
+    },
+    isActive: { type: Boolean, default: true },
   },
   { timestamps: true },
 );
 
-export default model("User", UserSchema, "users");
+export default model<IUser>("User", UserSchema, "users");

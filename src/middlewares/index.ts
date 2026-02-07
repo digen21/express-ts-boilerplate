@@ -1,4 +1,3 @@
-export { default as connectToDatabase } from "./connectToDatabase";
 export { default as globalErrorHandler } from "./globalErrorHandler";
 export { default as googleAuth } from "./google.strategy";
 export { default as isAuth } from "./isAuth";

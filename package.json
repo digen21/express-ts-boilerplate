@@ -6,7 +6,12 @@
   "scripts": {
     "start": "node ./build/index.js",
     "dev": "nodemon ./src/index.ts",
+    "migration:up": "npx cross-env NODE_OPTIONS=--loader=ts-node/esm migrate-mongo up",
+    "migration:down": "npx cross-env NODE_OPTIONS=--loader=ts-node/esm migrate-mongo down",
+    "migration:create": "npx migrate-mongo create",
+    "migration:reset": "npm run migration:down && npm run migration:up",
     "build": "tsc && tsc-alias",
+    "fresh-start": "npm i && npm run migration:reset && npm run build && npm run dev",
     "test": "cross-env NODE_ENV=test jest --runInBand"
   },
   "keywords": [],
@@ -20,6 +25,7 @@
     "express": "^5.2.1",
     "google-auth-library": "^10.5.0",
     "http-status": "^2.1.0",
+    "ioredis": "^5.9.2",
     "joi": "^18.0.2",
     "joi-objectid": "^4.0.2",
     "jsonwebtoken": "^9.0.3",
@@ -28,7 +34,6 @@
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "passport-jwt": "^4.0.1",
-    "ts-node": "^10.9.1",
     "tsc-alias": "^1.8.16",
     "winston": "^3.19.0",
     "winston-daily-rotate-file": "^5.0.0"
@@ -41,6 +46,7 @@
     "@types/express": "^5.0.6",
     "@types/express-session": "^1.18.2",
     "@types/http-status": "^0.2.30",
+    "@types/ioredis": "^4.28.10",
     "@types/jest": "^30.0.0",
     "@types/joi": "^17.2.2",
     "@types/jsonwebtoken": "^9.0.10",
@@ -56,9 +62,11 @@
     "@types/winston": "^2.4.4",
     "cross-env": "^10.1.0",
     "jest": "^30.2.0",
+    "migrate-mongo": "^14.0.7",
     "nodemon": "^3.1.11",
     "supertest": "^7.2.2",
     "ts-jest": "^29.4.6",
+    "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.9.3"
   }

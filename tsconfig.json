@@ -13,13 +13,14 @@
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@config": ["./src/config"],
       "@middlewares": ["./src/middlewares/"],
+      "@service": ["./src/service/"],
       "@controllers": ["./src/controller"],
       "@routes": ["./src/routes"],
       "@models/*": ["./src/models/*"],
       "@utils": ["./src/utils"],
       "@types": ["./src/types"],
-      "@config": ["./src/config"],
       "@validators": ["./src/validators"]
     }
   },

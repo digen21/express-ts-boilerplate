@@ -3,7 +3,7 @@ import "winston-daily-rotate-file";
 import path from "path";
 import util from "util";
 
-import { env } from "@config";
+import env from "../config/envVariable";
 
 const { combine, timestamp, json, printf, colorize, errors } = format;
 
@@ -15,6 +15,8 @@ const customColors = {
 };
 
 addColors(customColors);
+
+const level = env.isDev ? "info" : "debug";
 
 // Custom format for local development
 const logFormat = printf(({ level, message, timestamp, context, ...meta }) => {
@@ -29,7 +31,7 @@ const logFormat = printf(({ level, message, timestamp, context, ...meta }) => {
 });
 
 const logger = createLogger({
-  level: env.isProd ? "info" : "debug",
+  level,
   format: combine(
     timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
     env.isProd ? logFormat : combine(colorize({ all: true }), logFormat),

@@ -13,6 +13,7 @@ export const registerValidator = Joi.object({
     city: Joi.string().max(50).optional(),
     country: Joi.string().max(50).optional(),
     password: Joi.string().min(6).required(),
+    role: Joi.string().valid("user", "admin").optional(),
   }),
 });
 

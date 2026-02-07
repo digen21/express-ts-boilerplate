@@ -1,5 +1,5 @@
 import express from "express";
-import connectToDatabase from "../middlewares/connectToDatabase";
+import connectToDatabase from "../config/connectToDatabase";
 import globalErrorHandler from "../middlewares/globalErrorHandler";
 import isAuth from "../middlewares/isAuth";
 import passportAuth from "../middlewares/passportAuth";

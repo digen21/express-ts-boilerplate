@@ -3,18 +3,26 @@ import cors from "cors";
 import express from "express";
 
 import { connectToDatabase, env } from "@config";
-import "@events/serviceRequest.listeners";
+import "@events";
 import {
+  generalLimiter,
   globalErrorHandler,
   googleAuth,
   passportAuth,
   requestLogger,
+  useHelmet,
 } from "@middlewares";
 import useRouter from "@routes";
 import { logger } from "@utils";
 
 const app = express();
 const { PORT } = env;
+
+// Apply security headers
+useHelmet(app);
+
+// Apply general rate limiting to all requests
+app.use(generalLimiter);
 
 app.use(requestLogger);
 app.use(express.json());

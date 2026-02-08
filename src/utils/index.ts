@@ -1,4 +1,5 @@
 export { default as buildQuery, BuildQuery } from "./buildQuery";
 export { default as catchAsync } from "./catchAsync";
 export { default as logger } from "./logger";
+export * from "./regex";
 export { default as ServerError } from "./ServerError";

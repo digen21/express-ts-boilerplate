@@ -3,7 +3,7 @@ import httpStatus from "http-status";
 import passport from "passport";
 
 const isAuth: RequestHandler = (req, res, next) => {
-  passport.authenticate("jwt", { session: false }, (err, user, info) => {
+  passport.authenticate("jwt", { session: false }, (err, user) => {
     if (err) {
       return next(err);
     }

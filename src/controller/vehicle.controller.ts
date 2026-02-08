@@ -52,7 +52,7 @@ export const getVehicles = catchAsync(async (req, res) => {
   const { role, id: userId } = req.user as IUser;
   const { take, skip, sortBy, order, ...filters } = req.query;
 
-  const where: any = {};
+  const where: Record<string, unknown> = {};
   if (role === Roles.CUSTOMER) where.customer = userId;
 
   Object.assign(where, filters); // only allowed filters
@@ -70,7 +70,7 @@ export const getVehicles = catchAsync(async (req, res) => {
     ],
     limit: Number(take) || 20,
     skip: Number(skip) || 0,
-    sort: { createdAt: -1 },
+    sort: { [sortBy as string]: order === "asc" ? 1 : -1 },
   });
 
   return res.status(httpStatus.OK).json({

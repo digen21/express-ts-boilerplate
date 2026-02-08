@@ -1,6 +1,5 @@
 import { Types } from "mongoose";
 import { roleService } from "./base.service";
-import { IPermission } from "@types";
 
 export async function loadFromDB(
   roleId: string | Types.ObjectId,

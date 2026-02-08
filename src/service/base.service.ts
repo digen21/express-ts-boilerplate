@@ -1,10 +1,11 @@
-import { Model, ProjectionType, QueryOptions, Schema, Types } from "mongoose";
+import { Model, ProjectionType, QueryOptions, Types } from "mongoose";
 
 import Permission from "@models/permission.model";
 import Role from "@models/role.model";
 import Service from "@models/service.model";
 import ServiceLog from "@models/serviceLog.model";
 import { ServiceRequest } from "@models/serviceRequest.model";
+import Token from "@models/tokenModel";
 import { UserModel } from "@models/userModel";
 import Vehicle from "@models/vehicle.model";
 import {
@@ -13,11 +14,12 @@ import {
   IService,
   IServiceLog,
   IServiceRequest,
+  IToken,
   IUser,
   IVehicle,
 } from "@types";
 
-type Where<T> = Partial<Record<keyof T, any>>;
+type Where<T> = Partial<Record<keyof T, unknown>>;
 
 export class BaseRepository<T> {
   constructor(private model: Model<T>) {}
@@ -73,3 +75,4 @@ export const serviceRequestService = new BaseRepository<IServiceRequest>(
   ServiceRequest,
 );
 export const serviceLogService = new BaseRepository<IServiceLog>(ServiceLog);
+export const tokenService = new BaseRepository<IToken>(Token);

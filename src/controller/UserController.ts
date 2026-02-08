@@ -7,12 +7,11 @@ import mongoose from "mongoose";
 import { Profile } from "passport-google-oauth20";
 
 import { env } from "@config";
-import { transporter } from "@middlewares";
 import TokenModel from "@models/tokenModel";
 import { UserModel } from "@models/userModel";
 import { IRole, IUser, Roles, UserWithToken } from "@types";
 import { catchAsync, logger, ServerError } from "@utils";
-import { roleService } from "@service";
+import { roleService, sendVerificationMail } from "@service";
 
 const { JWT_TOKEN, EXPIRY_TIME } = env;
 
@@ -22,7 +21,7 @@ export const register = catchAsync(async (req: Request, res: Response) => {
   const { email, password, role: roleName } = req.body;
   const normalizedEmail = email.trim().toLowerCase();
 
-  let user = await UserModel.findOne({ email: normalizedEmail });
+  const user = await UserModel.findOne({ email: normalizedEmail });
 
   if (user)
     throw new ServerError({
@@ -61,10 +60,10 @@ export const register = catchAsync(async (req: Request, res: Response) => {
   if (env.ALLOW_SEND_EMAIL) {
     try {
       if (!env.isTest) {
-        await transporter(result, "verify-mail");
+        await sendVerificationMail(result);
       }
     } catch (error) {
-      logger.error("Failed to send verification mail: ", {
+      logger.error("sendVerificationMail: ", {
         error,
         context: "Nodemailer",
       });
@@ -334,12 +333,7 @@ export const googleMobileAuth = catchAsync(
       success: true,
       message: "Google authentication successful",
       token: appToken,
-      user: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        avatar: user.avatar,
-      },
+      user,
     });
   },
 );

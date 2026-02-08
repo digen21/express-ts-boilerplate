@@ -1,7 +1,6 @@
 import { Router } from "express";
 
 import {
-  confirmServiceRequest,
   createServiceRequest,
   deleteServiceRequest,
   getServiceRequest,

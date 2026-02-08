@@ -1,33 +1,21 @@
 import bcrypt from "bcrypt";
 import { Types } from "mongoose";
-import nodemailer from "nodemailer";
 
-import { env } from "@config";
-import TokenModel from "@models/tokenModel";
+import { env, transporter } from "@config";
 import { IUser } from "@types";
 import { logger } from "@utils";
+import { tokenService } from "./base.service";
 
-const { MAIL_HOST, MAIL_PORT, MAIL_USER, MAIL_PASSWORD, EMAIL_FROM } = env;
+const { EMAIL_FROM } = env;
 
-const transporter = nodemailer.createTransport({
-  host: MAIL_HOST,
-  port: MAIL_PORT,
-  auth: {
-    user: MAIL_USER,
-    pass: MAIL_PASSWORD,
-  },
-});
-
-export default async (data: IUser, mailType) => {
+export const sendVerificationMail = async (data: IUser) => {
   try {
     const verifyToken = await bcrypt.hash(data.id.toString(), 10);
 
-    const token = new TokenModel({
+    await tokenService.create({
       userId: data.id,
       token: verifyToken,
     });
-
-    await token.save();
 
     const options = {
       from: EMAIL_FROM,
@@ -53,7 +41,7 @@ export const sendServiceRequestConfirmationMail = async (
   const token = crypto.randomUUID();
   const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 min
 
-  await TokenModel.create({
+  tokenService.create({
     userId: user._id,
     referenceId: serviceRequestId,
     token,

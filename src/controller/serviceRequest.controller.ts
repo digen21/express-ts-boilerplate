@@ -4,10 +4,18 @@ import { Types } from "mongoose";
 
 import { handleServiceRequestStateTransition } from "@fsm/serviceRequest.fsm";
 import tokenModel from "@models/tokenModel";
-import { serviceRequestService } from "@service";
-import { IRole, IUser, Roles, ServiceRequestStatus } from "@types";
+import {
+  sendServiceRequestConfirmationMail,
+  serviceRequestService,
+} from "@service";
+import {
+  IRole,
+  IServiceRequest,
+  IUser,
+  Roles,
+  ServiceRequestStatus,
+} from "@types";
 import { catchAsync, logger, ServerError } from "@utils";
-import { sendServiceRequestConfirmationMail } from "src/middlewares/transporter";
 
 const getServiceRequestPopulateOptions = [
   { path: "vehicle", select: "vehicleNo model type" },
@@ -60,7 +68,7 @@ export const getServiceRequests = catchAsync(
   async (req: Request, res: Response) => {
     const user = req.user as IUser;
     const role = user.role as IRole;
-    const where: any = {};
+    const where: Record<string, unknown> = {};
 
     if (role.name === Roles.CUSTOMER) {
       where.customer = user._id;
@@ -165,7 +173,11 @@ export const getServiceRequest = catchAsync(
     const user = req.user as IUser;
     const role = user.role as IRole;
 
-    const where: any = { _id: req.params.id, isDeleted: false };
+    const where: Partial<IServiceRequest> = {
+      _id: new Types.ObjectId(req.params.id as string),
+      isDeleted: false,
+    };
+
     if (role.name === Roles.CUSTOMER) where.customer = user._id;
 
     const request = await serviceRequestService.findOne(where, null, {

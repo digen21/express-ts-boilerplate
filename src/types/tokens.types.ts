@@ -3,6 +3,7 @@ import { Types } from "mongoose";
 interface IToken {
   userId: Types.ObjectId;
   token: string;
+  type: string;
   expiresAt?: Date;
   referenceId?: Types.ObjectId;
   _id: Types.ObjectId;

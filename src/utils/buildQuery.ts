@@ -1,4 +1,12 @@
-const buildQuery = (query: any) => {
+export interface BuildQuery {
+  take: number;
+  skip: number;
+  sortBy?: string;
+  order?: "asc" | "desc";
+  [key: string]: unknown;
+}
+
+const buildQuery = (query: BuildQuery) => {
   const {
     take,
     skip,

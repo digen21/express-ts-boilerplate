@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import httpStatus from "http-status";
 
-import { vehicleManagementService } from "@service";
-import { buildQuery, catchAsync } from "@utils";
 import { redis } from "@config";
+import { vehicleManagementService } from "@service";
+import { BuildQuery, buildQuery, catchAsync } from "@utils";
 
 export const createService = catchAsync(async (req: Request, res: Response) => {
   const service = await vehicleManagementService.create(req.body);
@@ -15,7 +15,7 @@ export const createService = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const getServices = catchAsync(async (req: Request, res: Response) => {
-  const { where, options } = buildQuery(req.query);
+  const { where, options } = buildQuery(req.query as BuildQuery);
 
   if (where.name) {
     where.name = {

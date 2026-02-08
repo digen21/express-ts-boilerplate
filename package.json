@@ -12,7 +12,9 @@
     "migration:reset": "npm run migration:down && npm run migration:up",
     "build": "tsc && tsc-alias",
     "fresh-start": "npm i && npm run migration:reset && npm run build && npm run dev",
-    "test": "cross-env NODE_ENV=test jest --runInBand"
+    "test": "cross-env NODE_ENV=test jest --runInBand",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix"
   },
   "keywords": [],
   "author": "Digen More",
@@ -39,6 +41,7 @@
     "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/bcrypt": "^6.0.0",
     "@types/compression": "^1.8.1",
     "@types/cors": "^2.8.19",
@@ -60,14 +63,20 @@
     "@types/supertest": "^6.0.3",
     "@types/typescript": "^2.0.0",
     "@types/winston": "^2.4.4",
+    "@typescript-eslint/eslint-plugin": "^8.54.0",
+    "@typescript-eslint/parser": "^8.54.0",
     "cross-env": "^10.1.0",
+    "eslint": "^9.39.2",
+    "globals": "^17.3.0",
     "jest": "^30.2.0",
+    "jiti": "^2.6.1",
     "migrate-mongo": "^14.0.7",
     "nodemon": "^3.1.11",
     "supertest": "^7.2.2",
     "ts-jest": "^29.4.6",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.54.0"
   }
 }

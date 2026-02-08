@@ -1,9 +1,10 @@
 import { Express } from "express";
 import passport from "passport";
-import { ExtractJwt, Strategy } from "passport-jwt";
+import { ExtractJwt, Strategy, VerifiedCallback } from "passport-jwt";
 
 import { UserModel } from "@models/userModel";
 import { IRole, IUser } from "@types";
+import { logger } from "@utils";
 
 const { JWT_TOKEN } = process.env;
 
@@ -20,32 +21,36 @@ export default (app: Express) => {
 
   try {
     passport.use(
-      new Strategy(options, async (payload: JWT_USER, done: Function) => {
-        if (!payload) {
-          return done(null, false);
-        }
-        const userId = payload?.userId;
-        const user = await UserModel.findById(
-          userId,
-          {},
-          {
-            populate: {
-              path: "role",
-              select: "name",
+      new Strategy(
+        options,
+        async (payload: JWT_USER, done: VerifiedCallback) => {
+          if (!payload) {
+            return done(null, false);
+          }
+          const userId = payload?.userId;
+          const user = await UserModel.findById(
+            userId,
+            {},
+            {
+              populate: {
+                path: "role",
+                select: "name",
+              },
+              lean: true,
             },
-            lean: true,
-          },
-        );
+          );
 
-        if (!user) return done(null, false);
+          if (!user) return done(null, false);
 
-        const userInfo: IUser = { ...user, role: user?.role as IRole };
-        return done(null, userInfo);
-      }),
+          const userInfo: IUser = { ...user, role: user?.role as IRole };
+          return done(null, userInfo);
+        },
+      ),
     );
 
     app.use(passport.initialize());
   } catch (error) {
-    throw new Error(error);
+    logger.error("Passport Auth Error : ", { context: "Passport Auth", error });
+    throw error;
   }
 };

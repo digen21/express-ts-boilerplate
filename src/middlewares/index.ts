@@ -5,5 +5,4 @@ export { default as hasAccess } from "./hasAccess";
 export { default as isAuth } from "./isAuth";
 export { default as passportAuth } from "./passportAuth";
 export { default as requestLogger } from "./requestLogger";
-export { default as transporter } from "./transporter";
 export { validate } from "./validate";

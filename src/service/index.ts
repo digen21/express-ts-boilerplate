@@ -3,8 +3,13 @@ export {
   roleService,
   serviceLogService,
   serviceRequestService,
+  tokenService,
   userService,
   vehicleManagementService,
   vehicleService,
 } from "./base.service";
+export {
+  sendServiceRequestConfirmationMail,
+  sendVerificationMail,
+} from "./mail.service";
 export { loadFromDB } from "./redis.service";

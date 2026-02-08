@@ -1,4 +1,6 @@
 import express from "express";
+import mongoose from "mongoose";
+
 import connectToDatabase from "../config/connectToDatabase";
 import globalErrorHandler from "../middlewares/globalErrorHandler";
 import isAuth from "../middlewares/isAuth";
@@ -29,7 +31,6 @@ export const setupDatabase = () => {
 
   // Close database connection after all tests
   afterAll(async () => {
-    const mongoose = require("mongoose");
     await mongoose.connection.close();
   });
 };

@@ -3,7 +3,7 @@ import Joi from "joi";
 import joiObjectId from "joi-objectid";
 
 const JoiObjectId = joiObjectId(Joi);
-console.log(Object.values(Roles));
+
 export const updateUserValidator = Joi.object({
   body: Joi.object({
     username: Joi.string().trim().min(3).max(30).optional(),

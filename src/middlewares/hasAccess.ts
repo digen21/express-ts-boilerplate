@@ -26,7 +26,6 @@ const hasAccess =
 
     if (!permissions || permissions.length === 0) {
       const dbPermissions = await loadFromDB(role._id); // must return string[]
-      console.log("dbPermissions :: ", dbPermissions);
 
       if (!dbPermissions.length) {
         throw new ServerError({

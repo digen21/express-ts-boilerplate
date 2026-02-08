@@ -26,8 +26,6 @@ const FSM_RULES: TransitionRule[] = [
       requestConfirmedAt,
       requestSentAt,
     }) => {
-      console.log("requestConfirmedAt ", requestConfirmedAt);
-
       if (!requestConfirmedAt)
         throw new ServerError({
           message: "Request not confirmed by customer",
@@ -73,11 +71,8 @@ export function handleServiceRequestStateTransition(
   ctx: FSMContext,
 ): FSMResult {
   const rule = FSM_RULES.find(
-    (r) => r.from === ctx.currentStatus && r.to === ctx.nextStatus,
+    (r) => r.from === ctx.currentStatus && r.to === ctx.nextStatus, // next status will be input from the client
   );
-
-  console.log("rule ", rule);
-  console.log("ctx ", ctx);
 
   if (!rule) {
     throw new ServerError({

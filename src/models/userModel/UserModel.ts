@@ -50,8 +50,6 @@ const UserSchema = new Schema<IUser>(
 );
 
 UserSchema.pre("save", async function () {
-  console.log("this.role", this.role);
-
   if (!this.isModified("role")) return;
 
   const role = await Role.findOne({ _id: this.role });

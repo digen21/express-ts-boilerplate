@@ -55,7 +55,7 @@ export const sendServiceRequestConfirmationMail = async (
     subject: "Confirm your service request",
     html: `
       <p>Please confirm your service request</p>
-      <a href="${env.FRONT_END_URL}/confirm-service?token=${token}">
+      <a href="${env.BASE_URL}/api/service-requests/confirm?token=${token}">
         Confirm Request
       </a>
     `,

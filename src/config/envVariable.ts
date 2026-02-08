@@ -51,6 +51,7 @@ const envSchema = Joi.object({
   REDIS_PORT: Joi.number().default(6379),
   ALLOW_SEND_EMAIL: Joi.boolean().default(false),
   FRONT_END_URL: Joi.string().optional(),
+  BASE_URL: Joi.string().optional(),
   // REDIS_PASSWORD: Joi.string(),
 }).unknown();
 
@@ -62,6 +63,7 @@ if (error) {
 
 const env = {
   NODE_ENV: envVars.NODE_ENV,
+  BASE_URL: envVars.BASE_URL,
   PORT: envVars.PORT,
   MONGODB_URI: envVars.MONGO_URI,
   MONGO_URI_TEST: envVars.MONGO_URI_TEST,

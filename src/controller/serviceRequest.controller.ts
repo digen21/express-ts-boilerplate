@@ -8,6 +8,7 @@ import {
   sendServiceRequestConfirmationMail,
   serviceRequestService,
   tokenService,
+  userService,
 } from "@service";
 import {
   Events,
@@ -41,6 +42,17 @@ export const createServiceRequest = catchAsync(
         status: httpStatus.BAD_REQUEST,
       });
 
+    const customer = await userService.findOne({
+      _id: customerId,
+    });
+
+    if (!customer) {
+      throw new ServerError({
+        message: "Customer not found",
+        status: httpStatus.NOT_FOUND,
+      });
+    }
+
     const request = await serviceRequestService.create({
       vehicle: req.body.vehicle, // ID
       service: req.body.service, // ID
@@ -51,7 +63,7 @@ export const createServiceRequest = catchAsync(
 
     try {
       await sendServiceRequestConfirmationMail(
-        user,
+        customer,
         request._id as Types.ObjectId,
       );
     } catch (error) {
@@ -231,6 +243,24 @@ export const confirmServiceRequest = catchAsync(
       });
     }
 
+    const request = await serviceRequestService.findOne({
+      _id: tokenDoc.referenceId,
+    });
+
+    if (!request) {
+      throw new ServerError({
+        message: "Service request not found",
+        status: httpStatus.NOT_FOUND,
+      });
+    }
+
+    if (request.status !== ServiceRequestStatus.PENDING) {
+      throw new ServerError({
+        message: "Service request already confirmed",
+        status: httpStatus.BAD_REQUEST,
+      });
+    }
+
     await serviceRequestService.update(
       { _id: tokenDoc.referenceId },
       {
@@ -246,6 +276,7 @@ export const confirmServiceRequest = catchAsync(
         action: Events.SERVICE_REQUEST_STATUS_CREATED,
         fromStatus: ServiceRequestStatus.PENDING,
         toStatus: ServiceRequestStatus.ACCEPTED,
+        performedBy: request.customer as Types.ObjectId,
       },
     );
 

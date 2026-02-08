@@ -22,7 +22,8 @@
       "@utils": ["./src/utils"],
       "@types": ["./src/types"],
       "@validators": ["./src/validators"],
-      "@fsm/*": ["./src/fsm/*"]
+      "@fsm/*": ["./src/fsm/*"],
+      "@events/*": ["./src/events/*"]
     }
   },
   "include": ["src/**/*.ts", "index.ts", "src/types/**/*.d.ts"],

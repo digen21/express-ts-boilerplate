@@ -1,5 +1,6 @@
 import { model, Schema } from "mongoose";
-import { IServiceLog } from "@types";
+
+import { IServiceLog, ServiceRequestStatus } from "@types";
 
 const ServiceLogSchema = new Schema<IServiceLog>(
   {
@@ -11,6 +12,8 @@ const ServiceLogSchema = new Schema<IServiceLog>(
     },
     action: { type: String, required: true },
     performedBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    fromStatus: { type: String, enum: ServiceRequestStatus },
+    toStatus: { type: String, enum: ServiceRequestStatus },
   },
   { timestamps: true },
 );

@@ -26,6 +26,13 @@ const tokenSchema = new Schema<IToken>(
       type: Schema.Types.ObjectId,
       ref: "ServiceRequest",
     },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
+    deletedAt: {
+      type: Date,
+    },
   },
   { timestamps: true },
 );

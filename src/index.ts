@@ -3,6 +3,7 @@ import cors from "cors";
 import express from "express";
 
 import { connectToDatabase, env } from "@config";
+import "@events/serviceRequest.listeners";
 import {
   globalErrorHandler,
   googleAuth,

@@ -1,13 +1,15 @@
-import { Schema } from "mongoose";
-import IServiceRequest from "./servicerequests.types";
-import IUser from "./users.types";
+import { Types } from "mongoose";
+
+import { ServiceRequestStatus } from "./servicerequests.types";
 
 interface IServiceLog {
-  serviceRequest: Schema.Types.ObjectId | IServiceRequest;
+  serviceRequest: Types.ObjectId;
   action: string;
-  performedBy: Schema.Types.ObjectId | IUser;
-  _id: Schema.Types.ObjectId;
+  performedBy: Types.ObjectId;
+  _id: Types.ObjectId;
   createdAt?: string;
+  fromStatus?: ServiceRequestStatus;
+  toStatus?: ServiceRequestStatus;
   updatedAt?: string;
 }
 

@@ -1,4 +1,5 @@
 export { QueryOptions } from "./commonservice.types";
+export { Events } from "./eventBus.types";
 export { default as IPermission, Permissions } from "./permissions.types";
 export { default as IRole, Roles } from "./roles.types";
 export {

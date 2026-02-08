@@ -50,7 +50,10 @@ export class BaseRepository<T> {
   }
 
   delete(query: Where<T>) {
-    return this.model.findByIdAndDelete(query);
+    return this.model.findOneAndUpdate(query, {
+      isDeleted: true,
+      deletedAt: new Date(),
+    });
   }
 
   count(query: Where<T>) {

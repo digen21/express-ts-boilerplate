@@ -9,6 +9,8 @@ interface IToken {
   _id: Types.ObjectId;
   createdAt?: string;
   updatedAt?: string;
+  readonly isDeleted: boolean;
+  readonly deletedAt?: Date;
 }
 
 export default IToken;

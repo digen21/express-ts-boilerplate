@@ -8,6 +8,7 @@ export {
   vehicleManagementService,
   vehicleService,
 } from "./base.service";
+export { eventBus } from "./eventBus.service";
 export {
   sendServiceRequestConfirmationMail,
   sendVerificationMail,

@@ -3,13 +3,16 @@ import httpStatus from "http-status";
 import { Types } from "mongoose";
 
 import { handleServiceRequestStateTransition } from "@fsm/serviceRequest.fsm";
-import tokenModel from "@models/tokenModel";
 import {
+  eventBus,
   sendServiceRequestConfirmationMail,
   serviceRequestService,
+  tokenService,
 } from "@service";
 import {
+  Events,
   IRole,
+  IServiceLog,
   IServiceRequest,
   IUser,
   Roles,
@@ -57,6 +60,16 @@ export const createServiceRequest = catchAsync(
         error,
       });
     }
+
+    eventBus.emitEvent<Partial<IServiceLog>>(
+      Events.SERVICE_REQUEST_STATUS_CREATED,
+      {
+        serviceRequest: request._id as Types.ObjectId,
+        action: Events.SERVICE_REQUEST_STATUS_CREATED,
+        performedBy: user._id,
+        toStatus: ServiceRequestStatus.PENDING,
+      },
+    );
 
     return res
       .status(httpStatus.CREATED)
@@ -125,6 +138,14 @@ export const updateServiceStatus = catchAsync(
         populate: getServiceRequestPopulateOptions,
       },
     );
+
+    eventBus.emitEvent(Events.SERVICE_REQUEST_STATUS_CHANGED, {
+      serviceRequest: request._id,
+      action: Events.SERVICE_REQUEST_STATUS_CHANGED,
+      performedBy: user._id,
+      fromStatus: request.status,
+      toStatus: nextStatus,
+    });
 
     return res.status(httpStatus.OK).json({
       success: true,
@@ -198,7 +219,7 @@ export const confirmServiceRequest = catchAsync(
   async (req: Request, res: Response) => {
     const { token } = req.query as { token: string };
 
-    const tokenDoc = await tokenModel.findOne({
+    const tokenDoc = await tokenService.findOne({
       token,
       type: "SERVICE_REQUEST_CONFIRM",
     });
@@ -218,7 +239,17 @@ export const confirmServiceRequest = catchAsync(
       },
     );
 
-    await tokenModel.deleteOne({ _id: tokenDoc._id });
+    eventBus.emitEvent<Partial<IServiceLog>>(
+      Events.SERVICE_REQUEST_STATUS_CREATED,
+      {
+        serviceRequest: tokenDoc.referenceId as Types.ObjectId,
+        action: Events.SERVICE_REQUEST_STATUS_CREATED,
+        fromStatus: ServiceRequestStatus.PENDING,
+        toStatus: ServiceRequestStatus.ACCEPTED,
+      },
+    );
+
+    await tokenService.delete({ _id: tokenDoc._id });
 
     res.json({ success: true, message: "Service request confirmed" });
   },

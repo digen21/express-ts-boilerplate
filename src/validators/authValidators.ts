@@ -1,4 +1,5 @@
 import { Roles } from "@types";
+import { PASSWORD_REGEX } from "@utils";
 import Joi from "joi";
 
 export const registerValidator = Joi.object({
@@ -13,7 +14,11 @@ export const registerValidator = Joi.object({
     avatar: Joi.string().uri().optional(),
     city: Joi.string().max(50).optional(),
     country: Joi.string().max(50).optional(),
-    password: Joi.string().min(6).required(),
+    password: Joi.string()
+      .min(8)
+      .max(128)
+      .pattern(PASSWORD_REGEX, "password")
+      .required(),
     role: Joi.string()
       .valid(...Object.values(Roles))
       .optional()

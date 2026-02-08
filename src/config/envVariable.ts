@@ -52,7 +52,11 @@ const envSchema = Joi.object({
   ALLOW_SEND_EMAIL: Joi.boolean().default(false),
   FRONT_END_URL: Joi.string().optional(),
   BASE_URL: Joi.string().optional(),
-  // REDIS_PASSWORD: Joi.string(),
+  REDIS_PASSWORD: Joi.string().when("NODE_ENV", {
+    is: "production",
+    then: Joi.string().required(),
+    otherwise: Joi.string().optional(),
+  }),
 }).unknown();
 
 const { error, value: envVars } = envSchema.validate(process.env);
@@ -84,7 +88,7 @@ const env = {
   REDIS_PORT: envVars.REDIS_PORT,
   ALLOW_SEND_EMAIL: envVars.ALLOW_SEND_EMAIL,
   FRONT_END_URL: envVars.FRONT_END_URL || "http://localhost:3000",
-  // REDIS_PASSWORD: envVars.REDIS_PASSWORD,
+  REDIS_PASSWORD: envVars.REDIS_PASSWORD,
 };
 
 export default env;

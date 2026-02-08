@@ -51,7 +51,7 @@ export const up = async (db) => {
         "CUSTOMER:READ",
         "VEHICLE:CREATE",
         "VEHICLE:READ",
-        "VE6986e0d7d4089b7c786b32baHICLE:UPDATE",
+        "VEHICLE:UPDATE",
         "SERVICE:CREATE",
         "SERVICE:READ",
         "SERVICE:UPDATE",

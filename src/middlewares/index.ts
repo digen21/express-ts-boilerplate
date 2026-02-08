@@ -4,5 +4,7 @@ export { default as googleAuth } from "./google.strategy";
 export { default as hasAccess } from "./hasAccess";
 export { default as isAuth } from "./isAuth";
 export { default as passportAuth } from "./passportAuth";
+export { authLimiter, generalLimiter, sensitiveLimiter } from "./rateLimiter";
 export { default as requestLogger } from "./requestLogger";
+export { default as useHelmet } from "./useHelmet";
 export { validate } from "./validate";

@@ -23,10 +23,10 @@
       "@types": ["./src/types"],
       "@validators": ["./src/validators"],
       "@fsm/*": ["./src/fsm/*"],
-      "@events/*": ["./src/events/*"]
+      "@events": ["./src/events"]
     }
   },
-  "include": ["src/**/*.ts", "index.ts", "src/types/**/*.d.ts"],
+  "include": ["src/**/*.ts", "index.ts", "src/types/**/*.d.ts", "src/**/*"],
   "exclude": ["node_modules"],
   "compileOnSave": true,
   "ts-node": {

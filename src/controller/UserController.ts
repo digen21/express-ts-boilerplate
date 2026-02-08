@@ -9,9 +9,9 @@ import { Profile } from "passport-google-oauth20";
 import { env } from "@config";
 import TokenModel from "@models/tokenModel";
 import { UserModel } from "@models/userModel";
+import { roleService, sendVerificationMail } from "@service";
 import { IRole, IUser, Roles, UserWithToken } from "@types";
 import { catchAsync, logger, ServerError } from "@utils";
-import { roleService, sendVerificationMail } from "@service";
 
 const { JWT_TOKEN, EXPIRY_TIME } = env;
 

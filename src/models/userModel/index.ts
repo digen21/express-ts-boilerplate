@@ -1,1 +1,1 @@
-export { default as UserModel } from "./userModel";
+export { default as UserModel } from "./UserModel";

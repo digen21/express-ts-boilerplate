@@ -1,5 +1,4 @@
-import { EventEmitter } from "events";
-
+import EventEmitter from "node:events";
 import { Events } from "@types";
 import { logger } from "@utils";
 

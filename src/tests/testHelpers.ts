@@ -4,8 +4,8 @@ import globalErrorHandler from "../middlewares/globalErrorHandler";
 import isAuth from "../middlewares/isAuth";
 import passportAuth from "../middlewares/passportAuth";
 import { UserModel } from "../models/userModel";
-import authRouter from "../routes/AuthRoute";
-import userRouter from "../routes/UserRoute";
+import authRouter from "../routes/auth.routes";
+import userRouter from "../routes/user.routes";
 
 export const app = express();
 app.use(express.json());

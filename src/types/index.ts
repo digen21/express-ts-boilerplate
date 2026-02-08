@@ -1,6 +1,12 @@
 export { QueryOptions } from "./commonservice.types";
-export { default as IPermission } from "./permissions.types";
+export { default as IPermission, Permissions } from "./permissions.types";
 export { default as IRole, Roles } from "./roles.types";
+export {
+  FSMContext,
+  FSMInput,
+  FSMResult,
+  TransitionRule,
+} from "./serviceFsm.types";
 export { default as IServiceLog } from "./servicelogs.types";
 export {
   default as IServiceRequest,

@@ -1,20 +1,19 @@
-import { Schema } from "mongoose";
+import { Types } from "mongoose";
 import IRole from "./roles.types";
 
 interface IUser {
   username?: string;
   name?: string;
   password: string;
-  id: string;
-  _id: string;
+  id: Types.ObjectId;
+  _id: Types.ObjectId;
   email: string;
   avatar?: string;
   phoneNumber?: string;
   isVerified: boolean;
   providerId?: string;
   provider?: string;
-  roleId: Schema.Types.ObjectId | string;
-  role?: IRole;
+  role: Types.ObjectId | string | IRole;
   isActive: boolean;
   createdAt?: string;
   updatedAt?: string;

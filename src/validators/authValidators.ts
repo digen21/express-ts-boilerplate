@@ -1,3 +1,4 @@
+import { Roles } from "@types";
 import Joi from "joi";
 
 export const registerValidator = Joi.object({
@@ -13,7 +14,10 @@ export const registerValidator = Joi.object({
     city: Joi.string().max(50).optional(),
     country: Joi.string().max(50).optional(),
     password: Joi.string().min(6).required(),
-    role: Joi.string().valid("user", "admin").optional(),
+    role: Joi.string()
+      .valid(...Object.values(Roles))
+      .optional()
+      .default(Roles.CUSTOMER),
   }),
 });
 

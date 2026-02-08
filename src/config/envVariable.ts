@@ -49,6 +49,8 @@ const envSchema = Joi.object({
   EMAIL_FROM: Joi.string(),
   REDIS_HOST: Joi.string().default("localhost"),
   REDIS_PORT: Joi.number().default(6379),
+  ALLOW_SEND_EMAIL: Joi.boolean().default(false),
+  FRONT_END_URL: Joi.string().optional(),
   // REDIS_PASSWORD: Joi.string(),
 }).unknown();
 
@@ -74,10 +76,12 @@ const env = {
   MAIL_PORT: envVars.MAIL_PORT,
   MAIL_USER: envVars.MAIL_USER,
   MAIL_PASSWORD: envVars.MAIL_PASSWORD,
-  EMAIL_FROM: envVars.EMAIL_FROM || "no-reply@travel-buddy",
+  EMAIL_FROM: envVars.EMAIL_FROM || "no-reply@ams",
   EXPIRY_TIME: envVars.EXPIRY_TIME || "10d",
   REDIS_HOST: envVars.REDIS_HOST,
   REDIS_PORT: envVars.REDIS_PORT,
+  ALLOW_SEND_EMAIL: envVars.ALLOW_SEND_EMAIL,
+  FRONT_END_URL: envVars.FRONT_END_URL || "http://localhost:3000",
   // REDIS_PASSWORD: envVars.REDIS_PASSWORD,
 };
 

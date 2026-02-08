@@ -1,9 +1,11 @@
-import { Schema } from "mongoose";
+import { Types } from "mongoose";
 
 interface IToken {
-  userId: string | Schema.Types.ObjectId;
+  userId: Types.ObjectId;
   token: string;
-  _id: Schema.Types.ObjectId;
+  expiresAt?: Date;
+  referenceId?: Types.ObjectId;
+  _id: Types.ObjectId;
   createdAt?: string;
   updatedAt?: string;
 }

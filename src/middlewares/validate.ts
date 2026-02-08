@@ -21,7 +21,9 @@ export const validate = (schema: ObjectSchema) => {
       });
     }
 
-    Object.assign(req, value); // sanitized data
+    if (value.body) Object.assign(req.body, value.body);
+    if (value.params) Object.assign(req.params, value.params);
+    if (value.query) Object.assign(req.query, value.query)
     next();
   };
 };

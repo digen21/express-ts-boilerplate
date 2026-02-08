@@ -1,8 +1,9 @@
+import { Roles } from "@types";
 import Joi from "joi";
 import joiObjectId from "joi-objectid";
 
 const JoiObjectId = joiObjectId(Joi);
-
+console.log(Object.values(Roles));
 export const updateUserValidator = Joi.object({
   body: Joi.object({
     username: Joi.string().trim().min(3).max(30).optional(),
@@ -15,6 +16,10 @@ export const updateUserValidator = Joi.object({
     city: Joi.string().max(50).optional(),
     country: Joi.string().max(50).optional(),
     password: Joi.string().min(6).optional(),
+    role: Joi.string()
+      .valid(...Object.values(Roles))
+      .optional()
+      .default(Roles.CUSTOMER),
     // Note: email, isVerified, provider, providerId are not allowed to be updated via this endpoint
   }),
 });

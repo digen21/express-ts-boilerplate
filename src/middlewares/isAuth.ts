@@ -1,12 +1,6 @@
-import { NextFunction, Request, RequestHandler, Response } from "express";
+import { RequestHandler } from "express";
+import httpStatus from "http-status";
 import passport from "passport";
-import { ExtractJwt } from "passport-jwt";
-const { JWT_TOKEN } = process.env;
-
-const options = {
-  secretOrKey: JWT_TOKEN,
-  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-};
 
 const isAuth: RequestHandler = (req, res, next) => {
   passport.authenticate("jwt", { session: false }, (err, user, info) => {
@@ -15,12 +9,15 @@ const isAuth: RequestHandler = (req, res, next) => {
     }
 
     if (!user) {
-      return res.status(401).json({
+      return res.status(httpStatus.UNAUTHORIZED).json({
         message: "Unauthorized",
+        status: httpStatus.UNAUTHORIZED,
       });
     }
 
-    req.user = user;
+    const userInfo = user;
+    delete userInfo.password;
+    req.user = userInfo;
     next();
   })(req, res, next);
 };

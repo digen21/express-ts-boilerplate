@@ -3,10 +3,11 @@ import passport from "passport";
 import { ExtractJwt, Strategy } from "passport-jwt";
 
 import { UserModel } from "@models/userModel";
+import { IRole, IUser } from "@types";
 
 const { JWT_TOKEN } = process.env;
 
-interface IUser {
+interface JWT_USER {
   id: string;
   userId: string;
 }
@@ -19,14 +20,27 @@ export default (app: Express) => {
 
   try {
     passport.use(
-      new Strategy(options, async (payload: IUser, done: Function) => {
+      new Strategy(options, async (payload: JWT_USER, done: Function) => {
         if (!payload) {
           return done(null, false);
         }
         const userId = payload?.userId;
-        const user = await UserModel.findById(userId);
+        const user = await UserModel.findById(
+          userId,
+          {},
+          {
+            populate: {
+              path: "role",
+              select: "name",
+            },
+            lean: true,
+          },
+        );
 
-        return done(null, user || false);
+        if (!user) return done(null, false);
+
+        const userInfo: IUser = { ...user, role: user?.role as IRole };
+        return done(null, userInfo);
       }),
     );
 

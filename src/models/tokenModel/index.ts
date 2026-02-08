@@ -3,8 +3,8 @@ import { Schema, model } from "mongoose";
 const tokenSchema = new Schema(
   {
     userId: {
-      type: "string",
-      trim: true, // will remove white space
+      type: Schema.Types.ObjectId,
+      ref: "User",
       required: true,
     },
     token: {
@@ -12,8 +12,21 @@ const tokenSchema = new Schema(
       trim: true,
       required: true,
     },
+    type: {
+      type: "string",
+      trim: true,
+      required: true,
+    },
+    expiresAt: {
+      type: Date,
+      required: true,
+    },
+    referenceId: {
+      type: Schema.Types.ObjectId,
+      ref: "ServiceRequest",
+    },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default model("token", tokenSchema);

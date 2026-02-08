@@ -10,15 +10,16 @@ import { env } from "@config";
 import { transporter } from "@middlewares";
 import TokenModel from "@models/tokenModel";
 import { UserModel } from "@models/userModel";
-import { IUser, UserWithToken } from "@types";
+import { IRole, IUser, Roles, UserWithToken } from "@types";
 import { catchAsync, logger, ServerError } from "@utils";
+import { roleService } from "@service";
 
 const { JWT_TOKEN, EXPIRY_TIME } = env;
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 export const register = catchAsync(async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+  const { email, password, role: roleName } = req.body;
   const normalizedEmail = email.trim().toLowerCase();
 
   let user = await UserModel.findOne({ email: normalizedEmail });
@@ -29,23 +30,45 @@ export const register = catchAsync(async (req: Request, res: Response) => {
       success: false,
       status: httpStatus.BAD_REQUEST,
     });
+
+  // TODO: Here need to think about it
+  const role = await roleService.findOne(
+    { name: roleName || Roles.CUSTOMER },
+    {
+      _id: 1,
+    },
+  );
+
+  if (!role)
+    throw new ServerError({
+      message: "Invalid role",
+      status: httpStatus.BAD_REQUEST,
+      success: false,
+    });
+
   const hashPassword = await bcrypt.hash(password, 10);
-  const result = await UserModel.create({
+
+  const result = await new UserModel({
     ...req.body,
     email: normalizedEmail,
     password: hashPassword,
-  });
+    isVerified: true,
+    isActive: true,
+    role: role._id,
+  }).save();
 
   // avoid breaking the code if send verification mail is failed
-  try {
-    if (!env.isTest) {
-      await transporter(result, "verify-mail");
+  if (env.ALLOW_SEND_EMAIL) {
+    try {
+      if (!env.isTest) {
+        await transporter(result, "verify-mail");
+      }
+    } catch (error) {
+      logger.error("Failed to send verification mail: ", {
+        error,
+        context: "Nodemailer",
+      });
     }
-  } catch (error) {
-    logger.error("Failed to send verification mail: ", {
-      error,
-      context: "Nodemailer",
-    });
   }
 
   if (result) {
@@ -66,9 +89,18 @@ export const register = catchAsync(async (req: Request, res: Response) => {
 export const login = catchAsync(async (req: Request, res: Response) => {
   const { password, email } = req.body;
 
-  const user: IUser = await UserModel.findOne({
-    email: email.trim().toLowerCase(),
-  });
+  const user = await UserModel.findOne(
+    {
+      email: { $regex: `^${email.trim()}$`, $options: "i" },
+    },
+    {},
+    {
+      populate: {
+        path: "role",
+        select: "name",
+      },
+    },
+  );
 
   if (!user) {
     throw new ServerError({
@@ -95,9 +127,15 @@ export const login = catchAsync(async (req: Request, res: Response) => {
     });
   }
 
-  const token = jwt.sign({ userId: user.id, role: user.role }, JWT_TOKEN!, {
-    expiresIn: env.EXPIRY_TIME,
-  });
+  const role = user.role as IRole;
+
+  const token = jwt.sign(
+    { userId: user.id, roleId: role._id!, role: role.name! },
+    JWT_TOKEN!,
+    {
+      expiresIn: env.EXPIRY_TIME,
+    },
+  );
 
   return res.status(httpStatus.OK).send({
     success: true,
@@ -235,7 +273,7 @@ export const findOrCreateGoogleUser = async (
     });
   }
 
-  const token = await jwt.sign({ userId: user.id }, JWT_TOKEN!, {
+  const token = jwt.sign({ userId: user.id }, JWT_TOKEN!, {
     expiresIn: EXPIRY_TIME,
   });
 

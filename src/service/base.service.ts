@@ -1,3 +1,5 @@
+import { Model, ProjectionType, QueryOptions, Schema, Types } from "mongoose";
+
 import Permission from "@models/permission.model";
 import Role from "@models/role.model";
 import Service from "@models/service.model";
@@ -14,7 +16,6 @@ import {
   IUser,
   IVehicle,
 } from "@types";
-import { Model, ProjectionType, QueryOptions } from "mongoose";
 
 type Where<T> = Partial<Record<keyof T, any>>;
 
@@ -42,8 +43,8 @@ export class BaseRepository<T> {
     return doc.save();
   }
 
-  update(query: Where<T>, data: Partial<T>) {
-    return this.model.findOneAndUpdate(query, data);
+  update(query: Where<T>, data: Partial<T>, options?: QueryOptions<T> | null) {
+    return this.model.findOneAndUpdate(query, data, options);
   }
 
   delete(query: Where<T>) {
@@ -54,8 +55,12 @@ export class BaseRepository<T> {
     return this.model.countDocuments(query);
   }
 
-  findById(id: string) {
-    return this.model.findById(id);
+  findById(
+    id: string | Types.ObjectId,
+    projection?: ProjectionType<T>,
+    options?: QueryOptions<T>,
+  ) {
+    return this.model.findById(id, projection, options);
   }
 }
 

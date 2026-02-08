@@ -10,6 +10,12 @@ const ServiceRequestSchema = new Schema<IServiceRequest>(
       required: true,
       index: true,
     },
+    customer: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true,
+    },
     service: {
       type: Schema.Types.ObjectId,
       ref: "Service",
@@ -23,6 +29,17 @@ const ServiceRequestSchema = new Schema<IServiceRequest>(
       required: true,
       default: ServiceRequestStatus.PENDING,
     },
+
+    requestSentAt: { type: Date },
+    requestConfirmedAt: { type: Date },
+
+    createdBy: { type: Schema.Types.ObjectId, ref: "User" }, // optional
+    updatedBy: { type: Schema.Types.ObjectId, ref: "User" },
+    lastUpdatedAt: { type: Date },
+
+    isDeleted: { type: Boolean, default: false, index: true },
+    deletedAt: { type: Date },
+    deletedBy: { type: Schema.Types.ObjectId, ref: "User" },
   },
   { timestamps: true },
 );

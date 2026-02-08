@@ -1,6 +1,7 @@
 import { Schema, model } from "mongoose";
 
 import { IUser } from "@types";
+import Role from "@models/role.model";
 
 const UserSchema = new Schema<IUser>(
   {
@@ -38,15 +39,27 @@ const UserSchema = new Schema<IUser>(
     providerId: {
       type: "string",
     },
-    roleId: {
+    role: {
       type: Schema.Types.ObjectId,
       ref: "Role",
-      required: true,
       index: true,
     },
     isActive: { type: Boolean, default: true },
   },
   { timestamps: true },
 );
+
+UserSchema.pre("save", async function () {
+  console.log("this.role", this.role);
+
+  if (!this.isModified("role")) return;
+
+  const role = await Role.findOne({ _id: this.role });
+  if (!role) {
+    throw new Error("Invalid role");
+  }
+
+  this.role = role._id;
+});
 
 export default model<IUser>("User", UserSchema, "users");

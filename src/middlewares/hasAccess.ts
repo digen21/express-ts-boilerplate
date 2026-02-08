@@ -1,22 +1,54 @@
+import { NextFunction, Request, Response } from "express";
+import httpStatus from "http-status";
+
 import { redis } from "@config";
 import { loadFromDB } from "@service";
+import { IRole, IUser, Permissions } from "@types";
 import { ServerError } from "@utils";
 
-export const hasAccess = (permission: string) => async (req, _res, next) => {
-  const { roleId } = req.user; // from JWT
+const sanitizeArray = <T>(arr: (T | null | undefined)[]) =>
+  arr?.filter(Boolean);
 
-  const key = `role:${roleId}:permissions`;
-  let permissions = await redis.get(key);
+const hasAccess =
+  (permission: Permissions) =>
+  async (req: Request, _res: Response, next: NextFunction) => {
+    const user = req.user as IUser;
+    const role = user.role as IRole;
 
-  if (!permissions) {
-    permissions = JSON.stringify(await loadFromDB(roleId)); // fallback once
-    await redis.set(key, permissions);
-  }
+    const redisKey = `role:${role._id}:permissions`;
 
-  if (!JSON.parse(permissions).includes(permission))
-    throw new ServerError({ message: "Forbidden", status: 403 });
+    let permissions;
 
-  next();
-};
+    const cached = await redis.get(redisKey);
+    if (cached) {
+      permissions = sanitizeArray(JSON.parse(cached));
+    }
 
+    if (!permissions || permissions.length === 0) {
+      const dbPermissions = await loadFromDB(role._id); // must return string[]
+      console.log("dbPermissions :: ", dbPermissions);
 
+      if (!dbPermissions.length) {
+        throw new ServerError({
+          message: "Forbidden",
+          status: httpStatus.FORBIDDEN,
+          success: false,
+        });
+      }
+
+      permissions = dbPermissions;
+      await redis.set(redisKey, JSON.stringify(permissions));
+    }
+
+    if (!permissions.includes(permission)) {
+      throw new ServerError({
+        message: "Forbidden",
+        status: httpStatus.FORBIDDEN,
+        success: false,
+      });
+    }
+
+    next();
+  };
+
+export default hasAccess;

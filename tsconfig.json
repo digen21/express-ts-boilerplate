@@ -21,13 +21,15 @@
       "@models/*": ["./src/models/*"],
       "@utils": ["./src/utils"],
       "@types": ["./src/types"],
-      "@validators": ["./src/validators"]
+      "@validators": ["./src/validators"],
+      "@fsm/*": ["./src/fsm/*"]
     }
   },
-  "include": ["src/**/*.ts", "index.ts"],
+  "include": ["src/**/*.ts", "index.ts", "src/types/**/*.d.ts"],
   "exclude": ["node_modules"],
   "compileOnSave": true,
   "ts-node": {
     "require": ["tsconfig-paths/register"]
-  }
+  },
+  "typeRoots": ["./src/types", "./node_modules/@types"]
 }
